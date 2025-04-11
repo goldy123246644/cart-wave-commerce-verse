@@ -16,6 +16,7 @@ export interface Product {
   sellerId?: string;
   sellerName?: string;
   options?: ProductOption[];
+  salesData?: SalesData;
 }
 
 export interface ProductOption {
@@ -28,4 +29,26 @@ export interface Category {
   name: string;
   description: string;
   image: string;
+}
+
+export interface SalesData {
+  monthlySales: { month: string; sales: number }[];
+  weeklyProfit: { week: string; profit: number }[];
+  stockHistory: { date: string; stock: number }[];
+  conversion: number;
+  growth: number;
+}
+
+export interface StateIndicator {
+  name: string;
+  value: number;
+  change: number;
+  status: 'positive' | 'negative' | 'neutral';
+}
+
+export interface ProfitLossData {
+  period: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
 }
