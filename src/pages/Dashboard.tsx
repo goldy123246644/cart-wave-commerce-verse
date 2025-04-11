@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BarChart, LineChart, AreaChart, PieChart, Bar, Line, Area, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, LineChart, AreaChart, PieChart, ComposedChart, Bar, Line, Area, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsContent, Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -39,6 +39,28 @@ const profitData = [
   { name: 'Dec', profit: 5400 },
 ];
 
+const detailedMonthlyProfit = [
+  { name: 'Jan', revenue: 8500, cost: 4800, profit: 3700, margin: 43.5 },
+  { name: 'Feb', revenue: 7200, cost: 4500, profit: 2700, margin: 37.5 },
+  { name: 'Mar', revenue: 9100, cost: 5200, profit: 3900, margin: 42.9 },
+  { name: 'Apr', revenue: 7800, cost: 5100, profit: 2700, margin: 34.6 },
+  { name: 'May', revenue: 8300, cost: 5400, profit: 2900, margin: 34.9 },
+  { name: 'Jun', revenue: 9500, cost: 5600, profit: 3900, margin: 41.1 },
+  { name: 'Jul', revenue: 10200, cost: 5900, profit: 4300, margin: 42.2 },
+  { name: 'Aug', revenue: 11000, cost: 6300, profit: 4700, margin: 42.7 },
+  { name: 'Sep', revenue: 12500, cost: 7100, profit: 5400, margin: 43.2 },
+  { name: 'Oct', revenue: 13800, cost: 7800, profit: 6000, margin: 43.5 },
+  { name: 'Nov', revenue: 14900, cost: 8200, profit: 6700, margin: 45.0 },
+  { name: 'Dec', revenue: 16500, cost: 8900, profit: 7600, margin: 46.1 },
+];
+
+const quarterlyProfitComparison = [
+  { name: 'Q1', thisYear: 10300, lastYear: 8700, growth: 18.4 },
+  { name: 'Q2', thisYear: 9500, lastYear: 7800, growth: 21.8 },
+  { name: 'Q3', thisYear: 14400, lastYear: 11200, growth: 28.6 },
+  { name: 'Q4', thisYear: 20300, lastYear: 15400, growth: 31.8 },
+];
+
 const categorySales = [
   { name: 'Electronics', value: 35 },
   { name: 'Clothing', value: 25 },
@@ -64,6 +86,15 @@ const profitLossData: ProfitLossData[] = [
 ];
 
 const COLORS = ['#8B5CF6', '#D946EF', '#F97316', '#0EA5E9', '#9F9EA1'];
+const PROFIT_COLORS = {
+  revenue: '#8B5CF6',
+  cost: '#F97316',
+  profit: '#0EA5E9',
+  margin: '#10B981',
+  thisYear: '#8B5CF6',
+  lastYear: '#D1D5DB',
+  growth: '#10B981'
+};
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -76,6 +107,7 @@ const Dashboard = () => {
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="sales">Sales</TabsTrigger>
+          <TabsTrigger value="profits">Profit Analysis</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
           <TabsTrigger value="3d">3D Models</TabsTrigger>
@@ -278,6 +310,126 @@ const Dashboard = () => {
                     <Tooltip />
                     <Legend />
                     <Area type="monotone" dataKey="sales" stroke="#8B5CF6" fill="#D6BCFA" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="profits" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Monthly Profit Breakdown</CardTitle>
+                <CardDescription>Revenue, cost, and profit by month</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                      data={detailedMonthlyProfit}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 0,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis yAxisId="left" />
+                      <YAxis yAxisId="right" orientation="right" domain={[0, 100]} unit="%" />
+                      <Tooltip />
+                      <Legend />
+                      <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill={PROFIT_COLORS.revenue} />
+                      <Bar yAxisId="left" dataKey="cost" name="Cost" fill={PROFIT_COLORS.cost} />
+                      <Bar yAxisId="left" dataKey="profit" name="Profit" fill={PROFIT_COLORS.profit} />
+                      <Line 
+                        yAxisId="right" 
+                        type="monotone" 
+                        dataKey="margin" 
+                        name="Profit Margin %" 
+                        stroke={PROFIT_COLORS.margin} 
+                        strokeWidth={2} 
+                        dot={{ r: 3 }}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Quarterly Profit Comparison</CardTitle>
+                <CardDescription>Year-over-year profit growth by quarter</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                      data={quarterlyProfitComparison}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 0,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis yAxisId="left" />
+                      <YAxis yAxisId="right" orientation="right" domain={[0, 50]} unit="%" />
+                      <Tooltip />
+                      <Legend />
+                      <Bar yAxisId="left" dataKey="thisYear" name="This Year" fill={PROFIT_COLORS.thisYear} />
+                      <Bar yAxisId="left" dataKey="lastYear" name="Last Year" fill={PROFIT_COLORS.lastYear} />
+                      <Line 
+                        yAxisId="right" 
+                        type="monotone" 
+                        dataKey="growth" 
+                        name="Growth %" 
+                        stroke={PROFIT_COLORS.growth} 
+                        strokeWidth={2} 
+                        dot={{ r: 4 }}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Annual Profit Trend</CardTitle>
+              <CardDescription>Monthly profit progression throughout the year</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={detailedMonthlyProfit}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Area 
+                      type="monotone" 
+                      dataKey="profit" 
+                      stroke={PROFIT_COLORS.profit} 
+                      fill={PROFIT_COLORS.profit} 
+                      name="Monthly Profit"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>

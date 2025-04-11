@@ -1,19 +1,23 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search, Heart, User, MapPin, ChevronDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/context/CartContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
   const { cartItems } = useCart();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchCategory, setSearchCategory] = useState('All');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const categories = [
     "All", "Deals", "Electronics", "Computers", "Smart Home", 
@@ -24,6 +28,23 @@ const Navbar = () => {
     e.preventDefault();
     // In a real app, we would redirect to search results
     console.log('Searching for:', searchQuery, 'in category:', searchCategory);
+    toast({
+      title: "Search initiated",
+      description: `Searching for "${searchQuery}" in ${searchCategory}`,
+    });
+  };
+
+  const handleNavigation = (path: string, label: string) => {
+    if (path === '/customer-service' || path === '/registry' || path === '/gift-cards' || path === '/sell') {
+      toast({
+        title: `${label} section`,
+        description: `This feature is coming soon!`,
+      });
+    } else {
+      navigate(path);
+    }
+    // Close mobile menu if open
+    setIsMobileMenuOpen(false);
   };
 
   const NavLinks = () => (
@@ -31,10 +52,35 @@ const Navbar = () => {
       <Link to="/" className="text-white hover:text-yellow-300 transition-colors text-sm">Home</Link>
       <Link to="/products" className="text-white hover:text-yellow-300 transition-colors text-sm">Today's Deals</Link>
       <Link to="/categories" className="text-white hover:text-yellow-300 transition-colors text-sm">All Categories</Link>
-      <Link to="/customer-service" className="text-white hover:text-yellow-300 transition-colors text-sm">Customer Service</Link>
-      <Link to="/registry" className="text-white hover:text-yellow-300 transition-colors text-sm">Registry</Link>
-      <Link to="/gift-cards" className="text-white hover:text-yellow-300 transition-colors text-sm">Gift Cards</Link>
-      <Link to="/sell" className="text-white hover:text-yellow-300 transition-colors text-sm">Sell</Link>
+      <Button 
+        variant="link" 
+        className="text-white hover:text-yellow-300 transition-colors text-sm p-0 h-auto"
+        onClick={() => handleNavigation('/customer-service', 'Customer Service')}
+      >
+        Customer Service
+      </Button>
+      <Button 
+        variant="link" 
+        className="text-white hover:text-yellow-300 transition-colors text-sm p-0 h-auto"
+        onClick={() => handleNavigation('/registry', 'Registry')}
+      >
+        Registry
+      </Button>
+      <Button 
+        variant="link" 
+        className="text-white hover:text-yellow-300 transition-colors text-sm p-0 h-auto"
+        onClick={() => handleNavigation('/gift-cards', 'Gift Cards')}
+      >
+        Gift Cards
+      </Button>
+      <Button 
+        variant="link" 
+        className="text-white hover:text-yellow-300 transition-colors text-sm p-0 h-auto"
+        onClick={() => handleNavigation('/sell', 'Sell')}
+      >
+        Sell
+      </Button>
+      <Link to="/dashboard" className="text-white hover:text-yellow-300 transition-colors text-sm">Dashboard</Link>
     </>
   );
 
@@ -123,7 +169,7 @@ const Navbar = () => {
 
               {/* Mobile Menu */}
               {isMobile && (
-                <Sheet>
+                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-white md:hidden">
                       <Menu size={24} />
@@ -132,7 +178,7 @@ const Navbar = () => {
                   <SheetContent side="right" className="bg-[#232f3e] text-white w-[250px] sm:w-[300px]">
                     <div className="bg-[#232f3e] flex justify-between items-center p-4 border-b border-gray-700">
                       <span className="text-xl font-bold">Menu</span>
-                      <Button variant="ghost" className="text-white p-0 h-auto">
+                      <Button variant="ghost" className="text-white p-0 h-auto" onClick={() => setIsMobileMenuOpen(false)}>
                         <X size={24} />
                       </Button>
                     </div>
