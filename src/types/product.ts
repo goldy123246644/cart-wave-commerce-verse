@@ -17,6 +17,13 @@ export interface Product {
   sellerName?: string;
   options?: ProductOption[];
   salesData?: SalesData;
+  dimensions?: ProductDimensions;
+  weight?: number;
+  warrantyInfo?: string;
+  returnPolicy?: string;
+  shippingTime?: string;
+  stockHistory?: StockHistory[];
+  relatedProducts?: number[];
 }
 
 export interface ProductOption {
@@ -51,4 +58,40 @@ export interface ProfitLossData {
   revenue: number;
   expenses: number;
   profit: number;
+}
+
+export interface ProductDimensions {
+  length: number;
+  width: number;
+  height: number;
+  unit: 'in' | 'cm';
+}
+
+export interface StockHistory {
+  date: string;
+  stock: number;
+  reason?: 'purchase' | 'return' | 'adjustment' | 'inventory';
+}
+
+export interface InventoryAlert {
+  productId: number;
+  productName: string;
+  currentStock: number;
+  threshold: number;
+  status: 'warning' | 'critical' | 'backorder';
+  daysUntilStockout?: number;
+}
+
+export interface CustomerSegment {
+  id: string;
+  name: string;
+  count: number;
+  averageOrderValue: number;
+  loyaltyScore: number;
+  demographics?: {
+    ageRange?: string;
+    location?: string;
+    gender?: string;
+  };
+  topCategories: { category: string; percentage: number }[];
 }

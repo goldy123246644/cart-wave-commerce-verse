@@ -11,6 +11,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Categories from "./pages/Categories";
 import Cart from "./pages/Cart";
 import Dashboard from "./pages/Dashboard";
+import CustomerAnalytics from "./pages/CustomerAnalytics";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -39,6 +40,7 @@ const App = () => (
                         <Route path="/categories" element={<Categories />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/customers" element={<CustomerAnalytics />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </div>

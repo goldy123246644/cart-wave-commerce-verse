@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BarChart, LineChart, AreaChart, PieChart, Bar, Line, Area, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -8,8 +7,8 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { TrendingUp, TrendingDown, DollarSign, Users, ShoppingBag, Activity, Package } from 'lucide-react';
 import { StateIndicator, ProfitLossData } from '@/types/product';
 import ProductModelViewer from '@/components/ProductModelViewer';
+import InventoryTrendViewer from '@/components/InventoryTrendViewer';
 
-// Mock data for the dashboard
 const salesData = [
   { name: 'Jan', sales: 4000 },
   { name: 'Feb', sales: 3000 },
@@ -78,18 +77,17 @@ const Dashboard = () => {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="sales">Sales</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="inventory">Inventory</TabsTrigger>
           <TabsTrigger value="3d">3D Models</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">
-          {/* State Indicators */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {stateIndicators.map((indicator) => (
               <StateIndicatorCard key={indicator.name} indicator={indicator} />
             ))}
           </div>
           
-          {/* Sales Chart */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <Card>
               <CardHeader>
@@ -191,7 +189,6 @@ const Dashboard = () => {
             </Card>
           </div>
           
-          {/* Category Distribution */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
@@ -324,6 +321,84 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="inventory" className="space-y-4">
+          <Card className="col-span-2 mb-4">
+            <CardHeader>
+              <CardTitle>Inventory Management</CardTitle>
+              <CardDescription>Track stock levels and inventory trends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <InventoryTrendViewer showAlerts={true} />
+            </CardContent>
+          </Card>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Restock Schedule</CardTitle>
+                <CardDescription>Upcoming inventory restocks</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { product: "Wireless Headphones", date: "2025-04-20", quantity: 50 },
+                    { product: "Smart Watch", date: "2025-04-15", quantity: 30 },
+                    { product: "Modern Sneakers", date: "2025-04-25", quantity: 100 }
+                  ].map((item, i) => (
+                    <div key={i} className="flex justify-between items-center p-3 border rounded-md">
+                      <div>
+                        <p className="font-medium">{item.product}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Expected: {new Date(item.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="bg-primary/10 text-primary px-2 py-1 rounded-md">
+                        {item.quantity} units
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Warehouse Distribution</CardTitle>
+                <CardDescription>Stock allocation across warehouses</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Main Warehouse', value: 45 },
+                          { name: 'East Coast', value: 25 },
+                          { name: 'West Coast', value: 20 },
+                          { name: 'International', value: 10 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {categorySales.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => `${value}%`} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
         
         <TabsContent value="3d" className="space-y-4">
