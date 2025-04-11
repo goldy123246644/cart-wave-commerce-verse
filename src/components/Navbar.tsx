@@ -1,108 +1,166 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, Heart, User } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, Heart, User, MapPin, ChevronDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Input } from '@/components/ui/input';
 import { useCart } from '@/context/CartContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
   const { cartItems } = useCart();
   const isMobile = useIsMobile();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchCategory, setSearchCategory] = useState('All');
+
+  const categories = [
+    "All", "Deals", "Electronics", "Computers", "Smart Home", 
+    "Home & Kitchen", "Fashion", "Books", "Toys", "Beauty"
+  ];
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // In a real app, we would redirect to search results
+    console.log('Searching for:', searchQuery, 'in category:', searchCategory);
+  };
 
   const NavLinks = () => (
     <>
-      <Link to="/" className="text-store-text hover:text-store-primary transition-colors">Home</Link>
-      <Link to="/products" className="text-store-text hover:text-store-primary transition-colors">Shop</Link>
-      <Link to="/categories" className="text-store-text hover:text-store-primary transition-colors">Categories</Link>
-      <Link to="/about" className="text-store-text hover:text-store-primary transition-colors">About</Link>
-      <Link to="/contact" className="text-store-text hover:text-store-primary transition-colors">Contact</Link>
+      <Link to="/" className="text-white hover:text-yellow-300 transition-colors text-sm">Home</Link>
+      <Link to="/products" className="text-white hover:text-yellow-300 transition-colors text-sm">Today's Deals</Link>
+      <Link to="/categories" className="text-white hover:text-yellow-300 transition-colors text-sm">All Categories</Link>
+      <Link to="/customer-service" className="text-white hover:text-yellow-300 transition-colors text-sm">Customer Service</Link>
+      <Link to="/registry" className="text-white hover:text-yellow-300 transition-colors text-sm">Registry</Link>
+      <Link to="/gift-cards" className="text-white hover:text-yellow-300 transition-colors text-sm">Gift Cards</Link>
+      <Link to="/sell" className="text-white hover:text-yellow-300 transition-colors text-sm">Sell</Link>
     </>
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-store-primary">ShopWave</Link>
-          </div>
+    <header className="sticky top-0 z-50 flex flex-col">
+      {/* Main Navbar */}
+      <div className="bg-[#131921] py-2 px-4">
+        <div className="container mx-auto">
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Logo */}
+            <Link to="/" className="text-2xl font-bold text-white mr-2">
+              <span className="text-yellow-400">Ama</span>
+              <span className="text-white">Shop</span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <NavLinks />
-          </nav>
+            {/* Deliver To */}
+            <div className="hidden md:flex text-white items-center mr-2">
+              <MapPin size={18} className="text-gray-300 mr-1" />
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-300">Deliver to</span>
+                <span className="text-sm font-semibold">United States</span>
+              </div>
+            </div>
 
-          {/* Search bar (desktop) */}
-          {!isMobile && (
-            <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? 'w-64' : 'w-8'}`}>
-              {isSearchOpen ? (
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    className="w-full py-2 pl-3 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-store-primary"
-                  />
-                  <button
-                    onClick={() => setIsSearchOpen(false)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="flex-1 flex">
+              <div className="relative flex-1 flex">
+                <div className="hidden md:flex">
+                  <select 
+                    className="bg-gray-100 rounded-l-md px-2 py-2 text-sm border-r border-gray-300 focus:outline-none"
+                    value={searchCategory}
+                    onChange={(e) => setSearchCategory(e.target.value)}
                   >
-                    <X size={18} className="text-store-light-text" />
-                  </button>
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
                 </div>
-              ) : (
-                <button onClick={() => setIsSearchOpen(true)} className="text-store-text hover:text-store-primary">
-                  <Search size={22} />
-                </button>
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="rounded-l-md md:rounded-none border-0 flex-1"
+                />
+                <Button 
+                  type="submit" 
+                  className="bg-yellow-400 hover:bg-yellow-500 text-black rounded-r-md px-4"
+                >
+                  <Search size={20} />
+                </Button>
+              </div>
+            </form>
+
+            {/* Right Nav Items */}
+            <div className="flex items-center gap-4">
+              {/* Account & Lists */}
+              <div className="hidden md:flex flex-col text-white">
+                <span className="text-xs">Hello, Sign in</span>
+                <div className="flex items-center">
+                  <span className="text-sm font-semibold">Account & Lists</span>
+                  <ChevronDown size={14} />
+                </div>
+              </div>
+
+              {/* Returns & Orders */}
+              <div className="hidden md:flex flex-col text-white">
+                <span className="text-xs">Returns</span>
+                <span className="text-sm font-semibold">& Orders</span>
+              </div>
+
+              {/* Cart */}
+              <Link to="/cart" className="relative text-white hover:text-yellow-300 transition-colors">
+                <div className="flex items-end">
+                  <ShoppingCart size={24} />
+                  <span className="text-sm font-semibold">
+                    Cart
+                    {cartItems.length > 0 && (
+                      <span className="absolute -top-2 left-3 bg-yellow-400 text-black h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full font-bold">
+                        {cartItems.length}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </Link>
+
+              {/* Mobile Menu */}
+              {isMobile && (
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-white md:hidden">
+                      <Menu size={24} />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="bg-[#232f3e] text-white w-[250px] sm:w-[300px]">
+                    <div className="bg-[#232f3e] flex justify-between items-center p-4 border-b border-gray-700">
+                      <span className="text-xl font-bold">Menu</span>
+                      <Button variant="ghost" className="text-white p-0 h-auto">
+                        <X size={24} />
+                      </Button>
+                    </div>
+                    <div className="flex flex-col gap-6 mt-8 px-4">
+                      <NavLinks />
+                    </div>
+                  </SheetContent>
+                </Sheet>
               )}
             </div>
-          )}
+          </div>
+        </div>
+      </div>
 
-          {/* Right side icons */}
-          <div className="flex items-center space-x-4">
-            <Link to="/wishlist" className="hidden sm:block text-store-text hover:text-store-primary transition-colors">
-              <Heart size={22} />
-            </Link>
-            <Link to="/account" className="hidden sm:block text-store-text hover:text-store-primary transition-colors">
-              <User size={22} />
-            </Link>
-            
-            <Link to="/cart" className="relative text-store-text hover:text-store-primary transition-colors">
-              <ShoppingCart size={22} />
-              {cartItems.length > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-store-primary text-white h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
-                  {cartItems.length}
-                </Badge>
-              )}
-            </Link>
+      {/* Secondary Navbar */}
+      <div className="bg-[#232f3e] py-1 px-4">
+        <div className="container mx-auto">
+          <div className="flex items-center">
+            {/* All Menu */}
+            <div className="flex items-center text-white px-2 py-1 hover:bg-gray-700 cursor-pointer">
+              <Menu size={18} className="mr-1" />
+              <span className="text-sm font-medium">All</span>
+            </div>
 
-            {/* Mobile menu */}
-            {isMobile && (
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="md:hidden">
-                    <Menu size={22} />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px]">
-                  <div className="flex flex-col gap-6 mt-8">
-                    <NavLinks />
-                    <div className="relative w-full mt-4">
-                      <input
-                        type="text"
-                        placeholder="Search products..."
-                        className="w-full py-2 pl-3 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-store-primary"
-                      />
-                      <Search size={18} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-store-light-text" />
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            )}
+            {/* Nav Links - Desktop */}
+            <div className="hidden md:flex space-x-6 ml-4">
+              <NavLinks />
+            </div>
           </div>
         </div>
       </div>
