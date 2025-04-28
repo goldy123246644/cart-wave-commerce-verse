@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,9 @@ import CustomerAnalytics from "./pages/CustomerAnalytics";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import SellerDashboard from "./pages/dashboards/SellerDashboard";
+import BuyerDashboard from "./pages/dashboards/BuyerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,9 @@ const App = () => (
                         <Route path="/categories" element={<Categories />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                        <Route path="/seller-dashboard" element={<SellerDashboard />} />
+                        <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
                         <Route path="/customers" element={<CustomerAnalytics />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
