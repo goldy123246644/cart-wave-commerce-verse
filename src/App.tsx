@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,8 @@ import Footer from "./components/Footer";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import SellerDashboard from "./pages/dashboards/SellerDashboard";
 import BuyerDashboard from "./pages/dashboards/BuyerDashboard";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,8 @@ const App = () => (
         <BrowserRouter>
           <div className="flex flex-col min-h-screen">
             <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
               <Route path="/" element={<Index />} />
               <Route 
                 path="*" 

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search, Heart, User, MapPin, ChevronDown } from 'lucide-react';
@@ -80,7 +79,8 @@ const Navbar = () => {
       >
         Sell
       </Button>
-      <Link to="/dashboard" className="text-white hover:text-yellow-300 transition-colors text-sm">Dashboard</Link>
+      <Link to="/login" className="text-white hover:text-yellow-300 transition-colors text-sm">Login</Link>
+      <Link to="/signup" className="text-white hover:text-yellow-300 transition-colors text-sm">Sign Up</Link>
     </>
   );
 
